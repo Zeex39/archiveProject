@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block title %}
+  {% if '/edit/' in request.path %}
+    Редактирование документа
+  {% elif "/delete/" in request.path %}
+    Удаление документа
+  {% else %}
+    Добавление документа
+  {% endif %}
+{% endblock %}
+{% block content %}
+  <div class="col d-flex justify-content-center">
+    <div class="card" style="width: 40rem;">
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% bootstrap_form form %}
+            {{ photo_formset.management_form }}
+            <div class="formset">
+              {% for photo_form in photo_formset %}
+                <div class="formset-item mb-3">
+                  {% bootstrap_form photo_form %}
+                  {% if photo_form.instance.pk %}
+                    <img src="{{ photo_form.instance.image.url }}" alt="Фото" class="img-thumbnail" width="100">
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          {% bootstrap_button button_type="submit" content="Отправить" %}
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
